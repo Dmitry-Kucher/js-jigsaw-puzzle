@@ -1,1 +1,0 @@
-{"version":3,"sources":["test.js"],"names":["console","log"],"mappings":";;AAAA;;;AAGAA,QAAQC,GAAR,CAAY,MAAZ","file":"app.js","sourcesContent":["/**\n * Created by dima on 18/05/2017.\n */\nconsole.log('test');"]}
