@@ -3,7 +3,7 @@
  */
 // import Image from ''
 
-const image = new Image();
+/* const image = new Image();
 
 image.src = 'img/memory.jpg';
 
@@ -31,5 +31,22 @@ function cutImageUp({ numOfCols = 20, numOfRows = 20 }) {
   anImageElement.src = imagePieces[0];
 }
 
-image.onload = cutImageUp;
+image.onload = cutImageUp;*/
 
+document.addEventListener('DOMContentLoaded', (event) => {
+  // создаём "оболочку" вокруг canvas элемента (id="c")
+  const canvas = new fabric.Canvas('c');
+
+// создаём прямоугольник
+  const rect = new fabric.Rect({
+    left: 100,
+    top: 100,
+    fill: 'red',
+    width: 20,
+    height: 20,
+    hasControls: false
+  });
+
+// добавляем прямоугольник, чтобы он отобразился
+  canvas.add(rect);
+});
