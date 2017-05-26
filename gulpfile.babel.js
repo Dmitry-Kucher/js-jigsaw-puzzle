@@ -59,7 +59,7 @@ gulp.task('webserver', () => {
 
 // start watch task and recompile/lint on changes
 gulp.task('watch', () => {
-  gulp.watch('src/*.js', ['lint', 'compile']);
+  gulp.watch(['src/*.js', 'app/*.html'], ['lint', 'compile']);
 });
 
 gulp.task('default', ['lint', 'compile', 'webserver', 'watch']);

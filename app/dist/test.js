@@ -36,10 +36,8 @@ function cutImageUp({ numOfCols = 20, numOfRows = 20 }) {
 image.onload = cutImageUp;*/
 
 document.addEventListener('DOMContentLoaded', function (event) {
-  // создаём "оболочку" вокруг canvas элемента (id="c")
   var canvas = new fabric.Canvas('c');
 
-  // создаём прямоугольник
   var rect = new fabric.Rect({
     left: 100,
     top: 100,
@@ -49,6 +47,14 @@ document.addEventListener('DOMContentLoaded', function (event) {
     hasControls: false
   });
 
-  // добавляем прямоугольник, чтобы он отобразился
-  canvas.add(rect);
+  fabric.Image.fromURL('img/memory.jpg', function (img) {
+    img.set({
+      clipTo: function clipTo(ctx) {
+        ctx.rect(-512, -100, 200, 200);
+        ctx.rect(0, -100, 200, 200);
+      }
+    });
+    canvas.add(img);
+  });
+  // canvas.add(rect);
 });
