@@ -47,14 +47,37 @@ document.addEventListener('DOMContentLoaded', function (event) {
     hasControls: false
   });
 
-  fabric.Image.fromURL('img/memory.jpg', function (img) {
-    img.set({
-      clipTo: function clipTo(ctx) {
-        ctx.rect(-512, -100, 200, 200);
-        ctx.rect(0, -100, 200, 200);
+  var img = fabric.Image.fromURL('img/memory.jpg', function (img) {
+    // img.set({
+    //   clipTo: function(ctx) {
+    //     ctx.rect(-512, -100, 200, 200);
+    //     ctx.rect(0, -100, 200, 200);
+    //   }
+    // });
+    var pieces = [];
+    var numberOfCols = 20;
+    var numberOfRows = 20;
+    var colSize = img.getWidth() / numberOfCols;
+    var rowSize = img.getHeight() / numberOfRows;
+    for (var cols = 0; cols < numberOfCols; cols += 1) {
+      for (var rows = 0; rows < numberOfRows; rows += 1) {
+        var dataUrl = img.toDataURL({
+          left: colSize * cols,
+          top: rowSize * rows,
+          width: colSize,
+          height: rowSize
+        });
+        pieces.push(dataUrl);
       }
-    });
-    canvas.add(img);
+    }
+
+    for (var i = 0; i < pieces.length; i += 1) {
+      fabric.Image.fromURL(pieces[i], function (smallImage) {
+        canvas.add(smallImage);
+      });
+    }
   });
+  // img.toDataUrl();
+  // canvas.add(img);
   // canvas.add(rect);
 });
