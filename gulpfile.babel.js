@@ -41,11 +41,12 @@ gulp.task('lint:fix', () => {
 });
 
 // compile ES6 with babel
-gulp.task('compile', () => gulp.src('src/*.js')
+gulp.task('compile', () => gulp.src('src/**/*.js')
         .pipe(sourcemaps.init())
-        .pipe(babel({
-          presets: ['es2015'],
-        }))
+          .pipe(babel({
+            presets: ['es2015'],
+          }))
+        .pipe(sourcemaps.write())
         .pipe(gulp.dest('app/dist')));
 
 // start webserver to test project
@@ -59,7 +60,7 @@ gulp.task('webserver', () => {
 
 // start watch task and recompile/lint on changes
 gulp.task('watch', () => {
-  gulp.watch(['src/*.js', 'app/*.html'], ['lint', 'compile']);
+  gulp.watch(['src/**/*.js', 'app/*.html'], ['lint', 'compile']);
 });
 
 gulp.task('default', ['lint', 'compile', 'webserver', 'watch']);
