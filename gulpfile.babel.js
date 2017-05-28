@@ -7,6 +7,10 @@ import babel from 'gulp-babel';
 import sourcemaps from 'gulp-sourcemaps';
 import webserver from 'gulp-webserver';
 import eslint from 'gulp-eslint';
+import concat from 'gulp-concat';
+import browserify from 'browserify';
+import source from 'vinyl-source-stream';
+import buffer from 'vinyl-buffer';
 
 const config = {
   paths: [
@@ -41,13 +45,20 @@ gulp.task('lint:fix', () => {
 });
 
 // compile ES6 with babel
-gulp.task('compile', () => gulp.src('src/**/*.js')
-        .pipe(sourcemaps.init())
-          .pipe(babel({
-            presets: ['es2015'],
-          }))
-        .pipe(sourcemaps.write())
-        .pipe(gulp.dest('app/dist')));
+gulp.task('compile', () => gulp.src(['src/classes/*.js', 'src/*.js'])
+  .pipe(sourcemaps.init())
+  .pipe(babel({
+    presets: ['es2015'],
+  }))
+  .pipe(concat('main.js'))
+  .pipe(sourcemaps.write('.'))
+  .pipe(gulp.dest('app/dist')));
+
+gulp.task('browserify', () => browserify('./app/dist/main.js')
+  .bundle()
+  .pipe(source('app/dist/bundle.js'))
+  .pipe(buffer())
+  .pipe(gulp.dest('app/dist')));
 
 // start webserver to test project
 gulp.task('webserver', () => {
@@ -63,4 +74,4 @@ gulp.task('watch', () => {
   gulp.watch(['src/**/*.js', 'app/*.html'], ['lint', 'compile']);
 });
 
-gulp.task('default', ['lint', 'compile', 'webserver', 'watch']);
+gulp.task('default', ['lint', 'compile', 'browserify', 'webserver', 'watch']);
