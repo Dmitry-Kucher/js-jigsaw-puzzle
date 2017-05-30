@@ -9,7 +9,6 @@ document.addEventListener('DOMContentLoaded', () => {
     renderOnAddRemove: false,
     backgroundColor: '#0f0',
   });
-  console.log('2');
 
   const imageHTMLElement = document.querySelector('[jjp-image]');
   const imgInstance = new fabric.Image(imageHTMLElement);

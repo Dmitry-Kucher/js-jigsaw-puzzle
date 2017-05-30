@@ -62,15 +62,7 @@ gulp.task('compile', () => gulp.src(['src/classes/*.js', 'src/*.js'], { base: '.
   .pipe(sourcemaps.write('.'))
   .pipe(gulp.dest('app/dist')));
 
-gulp.task('browserify', () => browserify('app/dist/test.js')
-  .bundle()
-  .pipe(source('bundle.js'))
-  .pipe(buffer())
-  .pipe(sourcemaps.init())
-  .pipe(sourcemaps.write('.'))
-  .pipe(gulp.dest('app/dist')));
-
-gulp.task('es6', () => {
+gulp.task('browserify', () => {
   browserify({ debug: true })
     .transform(babelify)
     .require('src/test.js', { entry: true })
@@ -79,8 +71,6 @@ gulp.task('es6', () => {
     .pipe(source('bundle.js'))
     .pipe(gulp.dest('app/dist'));
 });
-
-
 
 // start webserver to test project
 gulp.task('webserver', () => {
@@ -93,9 +83,9 @@ gulp.task('webserver', () => {
 
 // start watch task and recompile/lint on changes
 gulp.task('watch', () => {
-  gulp.watch(['src/**/*.js', 'app/*.html'], ['lint', 'compile']);
+  gulp.watch(['src/**/*.js', 'app/*.html'], ['clean', 'lint', 'browserify']);
 });
 
 gulp.task('build', ['clean', 'browserify']);
 
-gulp.task('default', ['lint', 'es6', 'webserver', 'watch']);
+gulp.task('default', ['lint', 'browserify', 'webserver', 'watch']);
