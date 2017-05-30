@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderOnAddRemove: false,
     backgroundColor: '#0f0',
   });
+  console.log('2');
 
   const imageHTMLElement = document.querySelector('[jjp-image]');
   const imgInstance = new fabric.Image(imageHTMLElement);
@@ -34,11 +35,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // pieces.forEach((item) => {
   //   console.log(item);
   // });
-
+  let i = 0;
   for (let piece of pieces) {
     const last = (i === (pieces.length - 1));
+    i += 1;
 
-    fabric.Image.fromURL(pieces[i], (img) => {
+    fabric.Image.fromURL(piece, (img) => {
       img.set('hasControls', false);
       canvas.add(img);
       if (last) {
