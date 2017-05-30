@@ -12,6 +12,7 @@ import clean from 'gulp-clean';
 import tap from 'gulp-tap';
 import gutil from 'gulp-util';
 import uglify from 'gulp-uglify';
+import babelify from 'babelify';
 import source from 'vinyl-source-stream';
 import buffer from 'vinyl-buffer';
 
@@ -69,7 +70,15 @@ gulp.task('browserify', () => browserify('app/dist/test.js')
   .pipe(sourcemaps.write('.'))
   .pipe(gulp.dest('app/dist')));
 
-
+gulp.task('es6', () => {
+  browserify({ debug: true })
+    .transform(babelify)
+    .require('src/test.js', { entry: true })
+    .bundle()
+    .on('error', gutil.log)
+    .pipe(source('bundle.js'))
+    .pipe(gulp.dest('app/dist'));
+});
 
 
 
@@ -87,4 +96,6 @@ gulp.task('watch', () => {
   gulp.watch(['src/**/*.js', 'app/*.html'], ['lint', 'compile']);
 });
 
-gulp.task('default', ['lint', 'compile', 'browserify', 'webserver', 'watch']);
+gulp.task('build', ['clean', 'browserify']);
+
+gulp.task('default', ['lint', 'es6', 'webserver', 'watch']);

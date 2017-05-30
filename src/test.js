@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
   //   console.log(item);
   // });
   let i = 0;
-  for (let piece of pieces) {
+  for (const piece of pieces) {
     const last = (i === (pieces.length - 1));
     i += 1;
 
