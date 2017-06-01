@@ -9,13 +9,14 @@ import webserver from 'gulp-webserver';
 import eslint from 'gulp-eslint';
 import browserify from 'browserify';
 import clean from 'gulp-clean';
-import tap from 'gulp-tap';
 import gutil from 'gulp-util';
 import uglify from 'gulp-uglify';
+import gulpif from 'gulp-if';
 import babelify from 'babelify';
 import source from 'vinyl-source-stream';
 import buffer from 'vinyl-buffer';
 
+const taskStrategy = gutil.env.browser ? 'browserify' : 'compile';
 const config = {
   paths: [
     '**/*.js',
@@ -69,11 +70,13 @@ gulp.task('browserify', () => {
     .bundle()
     .on('error', gutil.log)
     .pipe(source('bundle.js'))
+    .pipe(gulpif(gutil.env.production, buffer()))
+    .pipe(gulpif(gutil.env.production, uglify()))
     .pipe(gulp.dest('app/dist'));
 });
 
 // start webserver to test project
-gulp.task('webserver', () => {
+gulp.task('webserver', [taskStrategy], () => {
   gulp.src('app')
     .pipe(webserver({
       livereload: true,
@@ -83,9 +86,9 @@ gulp.task('webserver', () => {
 
 // start watch task and recompile/lint on changes
 gulp.task('watch', () => {
-  gulp.watch(['src/**/*.js', 'app/*.html'], ['clean', 'lint', 'browserify']);
+  gulp.watch(['src/**/*.js', 'app/*.html'], ['clean', 'lint', taskStrategy]);
 });
 
-gulp.task('build', ['clean', 'browserify']);
+gulp.task('build', ['clean', taskStrategy]);
 
-gulp.task('default', ['lint', 'browserify', 'webserver', 'watch']);
+gulp.task('default', ['clean', 'lint', taskStrategy, 'webserver', 'watch']);
