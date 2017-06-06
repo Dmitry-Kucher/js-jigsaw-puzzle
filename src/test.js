@@ -4,6 +4,8 @@
 import Piece from './classes/Piece';
 import Pieces from './classes/Pieces';
 
+console.log('test 2');
+
 document.addEventListener('DOMContentLoaded', () => {
   const canvas = new fabric.Canvas('c', {
     renderOnAddRemove: false,

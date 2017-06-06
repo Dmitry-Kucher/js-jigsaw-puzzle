@@ -8,7 +8,7 @@ import sourcemaps from 'gulp-sourcemaps';
 import webserver from 'gulp-webserver';
 import eslint from 'gulp-eslint';
 import browserify from 'browserify';
-import clean from 'gulp-clean';
+import del from 'del';
 import gutil from 'gulp-util';
 import uglify from 'gulp-uglify';
 import gulpif from 'gulp-if';
@@ -16,7 +16,20 @@ import babelify from 'babelify';
 import source from 'vinyl-source-stream';
 import buffer from 'vinyl-buffer';
 
-const taskStrategy = gutil.env.browser ? 'browserify' : 'compile';
+const buildStrategy = (gutil.env.build === 'browser' ? gutil.env.build : 'console');
+let defaultTasks;
+let taskStrategy;
+
+gutil.env.production = !!gutil.env.production;
+
+if (buildStrategy === 'browser') {
+  defaultTasks = ['lint', 'webserver'];
+  taskStrategy = 'browserify';
+} else {
+  defaultTasks = ['lint', 'watch'];
+  taskStrategy = 'compile';
+}
+
 const config = {
   paths: [
     '**/*.js',
@@ -35,8 +48,7 @@ const config = {
 };
 
 // Task for clean building directory
-gulp.task('clean', () => gulp.src('app/dist')
-  .pipe(clean()));
+gulp.task('clean', () => del('app/dist'));
 
 // Task for linting all JavaScript code.
 gulp.task('lint', () => gulp.src(config.paths)
@@ -59,7 +71,6 @@ gulp.task('compile', () => gulp.src(['src/classes/*.js', 'src/*.js'], { base: '.
   .pipe(babel({
     presets: ['es2015'],
   }))
-  // .pipe(concat('main.js'))
   .pipe(sourcemaps.write('.'))
   .pipe(gulp.dest('app/dist')));
 
@@ -68,15 +79,16 @@ gulp.task('browserify', () => {
     .transform(babelify)
     .require('src/test.js', { entry: true })
     .bundle()
-    .on('error', gutil.log)
     .pipe(source('bundle.js'))
-    .pipe(gulpif(gutil.env.production, buffer()))
+    .pipe(buffer())
+    .pipe(sourcemaps.init())
     .pipe(gulpif(gutil.env.production, uglify()))
+    .pipe(gulpif(!gutil.env.production, sourcemaps.write('.')))
     .pipe(gulp.dest('app/dist'));
 });
 
 // start webserver to test project
-gulp.task('webserver', [taskStrategy], () => {
+gulp.task('webserver', ['browserify'], () => {
   gulp.src('app')
     .pipe(webserver({
       livereload: true,
@@ -85,10 +97,10 @@ gulp.task('webserver', [taskStrategy], () => {
 });
 
 // start watch task and recompile/lint on changes
-gulp.task('watch', () => {
-  gulp.watch(['src/**/*.js', 'app/*.html'], ['clean', 'lint', taskStrategy]);
+gulp.task('watch', [taskStrategy], () => {
+  gulp.watch(['src/**/*.js', 'app/*.html'], ['lint', taskStrategy]);
 });
 
-gulp.task('build', ['clean', taskStrategy]);
+gulp.task('build', [taskStrategy]);
 
-gulp.task('default', ['clean', 'lint', taskStrategy, 'webserver', 'watch']);
+gulp.task('default', defaultTasks);
