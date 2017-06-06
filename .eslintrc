@@ -4,5 +4,8 @@
     "Image": false,
     "document": false,
     "fabric": false
+  },
+  "rules": {
+    "no-restricted-syntax": 0
   }
 }

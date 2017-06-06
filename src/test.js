@@ -4,8 +4,6 @@
 import Piece from './classes/Piece';
 import Pieces from './classes/Pieces';
 
-console.log('test 2');
-
 document.addEventListener('DOMContentLoaded', () => {
   const canvas = new fabric.Canvas('c', {
     renderOnAddRemove: false,
@@ -33,15 +31,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // pieces.forEach((item) => {
-  //   console.log(item);
-  // });
   let i = 0;
-  for (const piece of pieces) {
+  for (const piece of pieces.pieces) {
     const last = (i === (pieces.length - 1));
     i += 1;
 
-    fabric.Image.fromURL(piece, (img) => {
+    fabric.Image.fromURL(piece.piece, (img) => {
       img.set('hasControls', false);
       canvas.add(img);
       if (last) {
