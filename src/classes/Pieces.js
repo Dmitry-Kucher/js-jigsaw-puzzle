@@ -5,12 +5,12 @@ import Piece from './Piece';
 
 export default class Peieces {
   constructor() {
-    this.pieces = [];
+    this.pieces = Object.create(null);// collection of pieces
   }
 
   addPiece(piece) {
     if (piece instanceof Piece) {
-      this.pieces.push(piece);
+      this.pieces[Object.keys(this.pieces).length] = piece;
     } else {
       throw new Error('Piece isn\'t instance of Piece');
     }
@@ -18,9 +18,5 @@ export default class Peieces {
 
   getPieces() {
     return this.pieces;
-  }
-
-  [Symbol.iterator]() {
-    return this.pieces.values();
   }
 }
