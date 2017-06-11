@@ -18,6 +18,14 @@ export default class Piece {
     return this.position;
   }
 
+  setSteps({ colNumbers, rowNumbers }) {
+    if (!colNumbers || !rowNumbers) {
+      throw new Error('Numbers of columns or rows is not defined');
+    }
+    this.horizontalStep = colNumbers;
+    this.verticalSter = rowNumbers;
+  }
+
   static drawCallback(additionalParams, img) {
     const { canvas, last } = additionalParams;
     const top = fabric.util.getRandomInt(0, 600);
@@ -26,7 +34,6 @@ export default class Piece {
     img.set('hasControls', false);
     img.set('top', top);
     img.set('left', left);
-    img.on('modified', ()=>{console.log('test')});
 
     canvas.add(img);
     if (last) {

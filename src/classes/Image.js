@@ -34,6 +34,7 @@ export default class Image {
           height: rowSize,
         });
         const piece = new Piece(dataUrl);
+        piece.setSteps({ colNumbers, rowNumbers })
         this.imagePieces.addPiece(piece);
       }
     }
