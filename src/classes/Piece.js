@@ -9,4 +9,18 @@ export default class Piece {
   getPiece() {
     return this.piece;
   }
+
+  static drawCallback(additionalParams, img) {
+    const { canvas, last } = additionalParams;
+    const top = fabric.util.getRandomInt(0, 600);
+    const left = fabric.util.getRandomInt(0, 600);
+
+    img.set('hasControls', false);
+    img.set('top', top);
+    img.set('left', left);
+    canvas.add(img);
+    if (last) {
+      canvas.renderAll();
+    }
+  }
 }

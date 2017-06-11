@@ -2,6 +2,7 @@
  * Created by dima on 18/05/2017.
  */
 import Image from './classes/Image';
+import Piece from './classes/Piece';
 
 document.addEventListener('DOMContentLoaded', () => {
   const canvas = new fabric.Canvas('c', {
@@ -13,19 +14,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const image = new Image(imageSelector);
 
   let i = 0;
-  image.splitImageToPieces({ colNumbers: 3, rowNumbers: 3 });
+  image.splitImageToPieces({ colNumbers: 8, rowNumbers: 8 });
   const pieces = image.getImagePieces();
   const piecesLength = Object.keys(pieces).length;
   for (const pieceIdentifier in pieces) {
     const last = (i === (piecesLength - 1));
     i += 1;
 
-    fabric.Image.fromURL(pieces[pieceIdentifier].piece, (img) => {
-      img.set('hasControls', false);
-      canvas.add(img);
-      if (last) {
-        canvas.renderAll();
-      }
-    });
+    const drawCallback = Piece.drawCallback.bind(null, { canvas, last});
+
+    fabric.Image.fromURL(pieces[pieceIdentifier].piece, drawCallback);
   }
 });
