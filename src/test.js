@@ -17,12 +17,13 @@ document.addEventListener('DOMContentLoaded', () => {
   image.splitImageToPieces({ colNumbers: 8, rowNumbers: 8 });
   const pieces = image.getImagePieces();
   const piecesLength = Object.keys(pieces).length;
-  for (const pieceIdentifier in pieces) {
+  for (const piecePosition in pieces) {
+    const piece = pieces[piecePosition];
     const last = (i === (piecesLength - 1));
     i += 1;
 
     const drawCallback = Piece.drawCallback.bind(null, { canvas, last});
 
-    fabric.Image.fromURL(pieces[pieceIdentifier].piece, drawCallback);
+    fabric.Image.fromURL(piece.getContent(), drawCallback);
   }
 });

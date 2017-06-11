@@ -3,11 +3,19 @@
  */
 export default class Piece {
   constructor(piece) {
-    this.piece = piece;
+    this.pieceContent = piece;
   }
 
-  getPiece() {
-    return this.piece;
+  getContent() {
+    return this.pieceContent;
+  }
+
+  setPosition(position) {
+    this.position = position;
+  }
+
+  getPosition() {
+    return this.position;
   }
 
   static drawCallback(additionalParams, img) {
@@ -18,6 +26,8 @@ export default class Piece {
     img.set('hasControls', false);
     img.set('top', top);
     img.set('left', left);
+    img.on('modified', ()=>{console.log('test')});
+
     canvas.add(img);
     if (last) {
       canvas.renderAll();

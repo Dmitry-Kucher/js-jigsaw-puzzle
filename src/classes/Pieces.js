@@ -10,7 +10,9 @@ export default class Peieces {
 
   addPiece(piece) {
     if (piece instanceof Piece) {
-      this.pieces[Object.keys(this.pieces).length] = piece;
+      const piecePosition = Object.keys(this.pieces).length;
+      piece.setPosition(piecePosition);
+      this.pieces[piecePosition] = piece;
     } else {
       throw new Error('Piece isn\'t instance of Piece');
     }
