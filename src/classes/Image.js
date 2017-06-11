@@ -25,8 +25,8 @@ export default class Image {
     const numberOfRows = rowNumbers;
     const colSize = this.imageInstance.getWidth() / numberOfCols;
     const rowSize = this.imageInstance.getHeight() / numberOfRows;
-    for (let cols = 0; cols < numberOfCols; cols += 1) {
-      for (let rows = 0; rows < numberOfRows; rows += 1) {
+    for (let rows = 0; rows < numberOfRows; rows += 1) {
+      for (let cols = 0; cols < numberOfCols; cols += 1) {
         const dataUrl = this.imageInstance.toDataURL({
           left: colSize * cols,
           top: rowSize * rows,
@@ -34,7 +34,7 @@ export default class Image {
           height: rowSize,
         });
         const piece = new Piece(dataUrl);
-        piece.setSteps({ colNumbers, rowNumbers })
+        piece.setSteps({ colNumbers, rowNumbers });
         this.imagePieces.addPiece(piece);
       }
     }

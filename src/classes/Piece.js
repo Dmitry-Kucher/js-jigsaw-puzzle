@@ -27,13 +27,16 @@ export default class Piece {
   }
 
   static drawCallback(additionalParams, img) {
-    const { canvas, last } = additionalParams;
+    const { canvas, last, piecePosition } = additionalParams;
     const top = fabric.util.getRandomInt(0, 600);
     const left = fabric.util.getRandomInt(0, 600);
 
     img.set('hasControls', false);
     img.set('top', top);
     img.set('left', left);
+    img.set('piecePosition', piecePosition);
+
+    img.on('modified', () => {console.log(img.piecePosition)});
 
     canvas.add(img);
     if (last) {
