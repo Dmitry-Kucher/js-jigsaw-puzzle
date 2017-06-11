@@ -9,11 +9,12 @@ document.addEventListener('DOMContentLoaded', () => {
     backgroundColor: '#0f0',
   });
 
-  const imageSelector = '[jjp-2image]';
+  const imageSelector = '[jjp-image]';
   const image = new Image(imageSelector);
 
   let i = 0;
-  const pieces = image.getPieces();
+  image.splitImageToPieces({ colNumbers: 3, rowNumbers: 3 });
+  const pieces = image.getImagePieces();
   const piecesLength = Object.keys(pieces).length;
   for (const pieceIdentifier in pieces) {
     const last = (i === (piecesLength - 1));

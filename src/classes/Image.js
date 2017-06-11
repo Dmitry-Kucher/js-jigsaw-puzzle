@@ -11,29 +11,36 @@ export default class Image {
     if (!this.imageElement) {
       throw new Error(`There is no img element with provided selector ${imageSelector}`);
     }
+
+    this.imageInstance = this.getFabricImageInstance();
+    this.imagePieces = new Pieces();
   }
 
-  getPieces() {
-    const imgInstance = new fabric.Image(this.imageElement);
+  getFabricImageInstance() {
+    return this.imageInstance || new fabric.Image(this.imageElement);
+  }
 
-    const imagePieces = new Pieces();
-    const numberOfCols = 6;
-    const numberOfRows = 6;
-    const colSize = imgInstance.getWidth() / numberOfCols;
-    const rowSize = imgInstance.getHeight() / numberOfRows;
+  splitImageToPieces({ colNumbers = 6, rowNumbers = 6 } = {}) {
+    const numberOfCols = colNumbers;
+    const numberOfRows = rowNumbers;
+    const colSize = this.imageInstance.getWidth() / numberOfCols;
+    const rowSize = this.imageInstance.getHeight() / numberOfRows;
     for (let cols = 0; cols < numberOfCols; cols += 1) {
       for (let rows = 0; rows < numberOfRows; rows += 1) {
-        const dataUrl = imgInstance.toDataURL({
+        const dataUrl = this.imageInstance.toDataURL({
           left: colSize * cols,
           top: rowSize * rows,
           width: colSize,
           height: rowSize,
         });
         const piece = new Piece(dataUrl);
-        imagePieces.addPiece(piece);
+        this.imagePieces.addPiece(piece);
       }
     }
-    return imagePieces.getPieces();
+  }
+
+  getImagePieces() {
+    return this.imagePieces.getPieces();
   }
 
   getImageElement() {
