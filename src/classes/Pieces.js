@@ -18,6 +18,23 @@ export default class Peieces {
     }
   }
 
+  static isNeighbours({ colNumbers, rowNumbers, candidatePositions }) {
+    const firstCandidatePosistion = candidatePositions.shift();
+    const secondCandidatePosistion = candidatePositions.shift();
+    const positionsDiff = Math.abs(firstCandidatePosistion - secondCandidatePosistion);
+    const positionsRemainder = firstCandidatePosistion % colNumbers;
+    const boundaryRemainderValues = [0, 1];
+    const neighbourDiffs = [0, colNumbers];
+
+    if (neighbourDiffs.indexOf(positionsDiff) === -1) {
+      return false;
+    }
+
+    if (boundaryRemainderValues.indexOf(positionsRemainder) !== -1) {
+      return false;
+    }
+  }
+
   getPieces() {
     return this.pieces;
   }
