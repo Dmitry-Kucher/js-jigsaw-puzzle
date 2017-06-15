@@ -18,12 +18,12 @@ export default class Piece {
     return this.position;
   }
 
-  setSteps({ colNumbers, rowNumbers }) {
-    if (!colNumbers || !rowNumbers) {
+  setSteps({ colLength, rowLength }) {
+    if (!colLength || !rowLength) {
       throw new Error('Numbers of columns or rows is not defined');
     }
-    this.horizontalStep = colNumbers;
-    this.verticalSter = rowNumbers;
+    this.horizontalStep = colLength;
+    this.verticalSter = rowLength;
   }
 
   static drawCallback(additionalParams, img) {
@@ -36,7 +36,7 @@ export default class Piece {
     img.set('left', left);
     img.set('piecePosition', piecePosition);
 
-    img.on('modified', () => {console.log(img.piecePosition)});
+    img.on('modified', () => { console.log(img.piecePosition); });
 
     canvas.add(img);
     if (last) {

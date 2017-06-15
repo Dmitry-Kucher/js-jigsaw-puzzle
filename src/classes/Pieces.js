@@ -3,7 +3,7 @@
  */
 import Piece from './Piece';
 
-export default class Peieces {
+export default class Pieces {
   constructor() {
     this.pieces = Object.create(null);// collection of pieces
   }
@@ -18,21 +18,35 @@ export default class Peieces {
     }
   }
 
-  static isNeighbours({ colNumbers, rowNumbers, candidatePositions }) {
-    const firstCandidatePosistion = candidatePositions.shift();
-    const secondCandidatePosistion = candidatePositions.shift();
-    const positionsDiff = Math.abs(firstCandidatePosistion - secondCandidatePosistion);
-    const positionsRemainder = firstCandidatePosistion % colNumbers;
-    const boundaryRemainderValues = [0, 1];
-    const neighbourDiffs = [0, colNumbers];
+  static isNeighbours({ colLength, currentElementPosition, targetElementPosition }) {
+    const params = {
+      colLength,
+      currentElementPosition,
+      targetElementPosition,
+    };
+    return Pieces.isVerticalNeighbours(params) || Pieces.isHorizontalNeighbours(params);
+  }
 
-    if (neighbourDiffs.indexOf(positionsDiff) === -1) {
-      return false;
+  static isVerticalNeighbours({ colLength, currentElementPosition, targetElementPosition }) {
+    const positionsDiff = Math.abs(currentElementPosition - targetElementPosition);
+
+    return positionsDiff === colLength;
+  }
+
+  static isHorizontalNeighbours({ colLength, currentElementPosition, targetElementPosition }) {
+    const positionsDiff = Math.abs(currentElementPosition - targetElementPosition);
+
+    if (positionsDiff === 1) {
+      if (currentElementPosition - targetElementPosition > 0) {
+        const currentElementPositionRemainder = currentElementPosition % colLength;
+        return currentElementPositionRemainder !== 0;
+      }
+
+      const targetElementPositionRemainder = targetElementPosition % colLength;
+      return targetElementPositionRemainder !== 0;
     }
 
-    if (boundaryRemainderValues.indexOf(positionsRemainder) !== -1) {
-      return false;
-    }
+    return false;
   }
 
   getPieces() {

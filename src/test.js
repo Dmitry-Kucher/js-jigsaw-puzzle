@@ -3,6 +3,7 @@
  */
 import Image from './classes/Image';
 import Piece from './classes/Piece';
+import Pieces from './classes/Pieces';
 
 document.addEventListener('DOMContentLoaded', () => {
   const collisionValue = 48;
@@ -13,9 +14,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const imageSelector = '[jjp-image]';
   const image = new Image(imageSelector);
+  const colLength = 8;
+  const rowLength = 8;
 
   let i = 0;
-  image.splitImageToPieces({ colNumbers: 8, rowNumbers: 8 });
+  image.splitImageToPieces({ colLength, rowLength });
   const pieces = image.getImagePieces();
   const piecesLength = Object.keys(pieces).length;
   for (const piecePosition in pieces) {
@@ -34,48 +37,74 @@ document.addEventListener('DOMContentLoaded', () => {
       if (targ === activeObject || !activeObject) {
         return;
       }
-      console.log(activeObject.piecePosition, targ.piecePosition);
-      if (Math.abs(activeObject.piecePosition - targ.piecePosition) === 1) {
-        let left;
-        let top;
-        let groupLeft;
-        let groupTop;
+      const positionsData = {
+        colLength,
+        currentElementPosition: activeObject.piecePosition,
+        targetElementPosition: targ.piecePosition,
+      };
 
-        const fromLeft = Math.abs(activeObject.aCoords.tr.x - targ.aCoords.tl.x);
-        const fromRight = Math.abs(activeObject.aCoords.tl.x - targ.aCoords.tr.x);
+      let left;
+      let top;
+      let groupLeft;
+      let groupTop;
+      if (Pieces.isHorizontalNeighbours(positionsData)) {
         const verticalDiff = Math.abs(activeObject.aCoords.tl.y - targ.aCoords.tl.y);
         const verticalPercent = 50;
 
-        if (fromLeft < collisionValue) {
-          left = targ.aCoords.tl.x - activeObject.width;
-          top = targ.aCoords.tl.y;
-          groupLeft = left;
-          groupTop = top;
-        } else if (fromRight < collisionValue) {
-          left = targ.aCoords.tr.x;
-          top = targ.aCoords.tl.y;
-          groupLeft = targ.aCoords.tl.x;
-          groupTop = top;
-        }
-
         if (verticalDiff < (verticalPercent / 100) * activeObject.height) {
-          if (left || top) {
-            activeObject.left = left;
-            activeObject.top = top;
-          }
+          const fromLeft = Math.abs(activeObject.aCoords.tr.x - targ.aCoords.tl.x);
+          const fromRight = Math.abs(activeObject.aCoords.tl.x - targ.aCoords.tr.x);
 
-          if (groupLeft || groupTop) {
-            const testGroup = new fabric.Group([activeObject, targ], {
-              left: groupLeft,
-              top: groupTop,
-              hasControls: false,
-            });
-
-            canvas.add(testGroup);
-            canvas.remove(activeObject);
-            canvas.remove(targ);
+          if (fromLeft < collisionValue) {
+            left = targ.aCoords.tl.x - activeObject.width;
+            top = targ.aCoords.tl.y;
+            groupLeft = left;
+            groupTop = top;
+          } else if (fromRight < collisionValue) {
+            left = targ.aCoords.tr.x;
+            top = targ.aCoords.tl.y;
+            groupLeft = targ.aCoords.tl.x;
+            groupTop = top;
           }
         }
+      }
+      if (Pieces.isVerticalNeighbours(positionsData)) {
+        const horizontalDiff = Math.abs(activeObject.aCoords.tl.y - targ.aCoords.tl.y);
+        const horizontalPercent = 50;
+
+        if (horizontalDiff < (horizontalPercent / 100) * activeObject.width) {
+          const fromTop = Math.abs(activeObject.aCoords.bl.y - targ.aCoords.tl.y);
+          const fromBottom = Math.abs(activeObject.aCoords.tl.y - targ.aCoords.bl.y);
+
+          if (fromTop < collisionValue) {
+            left = targ.aCoords.bl.x;
+            top = targ.aCoords.tl.y - activeObject.height;
+            groupLeft = left;
+            groupTop = top;
+          } else if (fromBottom < collisionValue) {
+            left = targ.aCoords.bl.x;
+            top = targ.aCoords.bl.y;
+            groupLeft = left;
+            groupTop = targ.aCoords.tl.y;
+          }
+        }
+      }
+
+      if (left || top) {
+        activeObject.left = left;
+        activeObject.top = top;
+      }
+
+      if (groupLeft || groupTop) {
+        const testGroup = new fabric.Group([activeObject, targ], {
+          left: groupLeft,
+          top: groupTop,
+          hasControls: false,
+        });
+
+        canvas.add(testGroup);
+        canvas.remove(activeObject);
+        canvas.remove(targ);
       }
     });
   });

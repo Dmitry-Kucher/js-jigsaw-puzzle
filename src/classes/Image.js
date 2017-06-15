@@ -20,9 +20,9 @@ export default class Image {
     return this.imageInstance || new fabric.Image(this.imageElement);
   }
 
-  splitImageToPieces({ colNumbers = 6, rowNumbers = 6 } = {}) {
-    const numberOfCols = colNumbers;
-    const numberOfRows = rowNumbers;
+  splitImageToPieces({ colLength = 6, rowLength = 6 } = {}) {
+    const numberOfCols = colLength;
+    const numberOfRows = rowLength;
     const colSize = this.imageInstance.getWidth() / numberOfCols;
     const rowSize = this.imageInstance.getHeight() / numberOfRows;
     for (let rows = 0; rows < numberOfRows; rows += 1) {
@@ -34,7 +34,7 @@ export default class Image {
           height: rowSize,
         });
         const piece = new Piece(dataUrl);
-        piece.setSteps({ colNumbers, rowNumbers });
+        piece.setSteps({ colLength, rowLength });
         this.imagePieces.addPiece(piece);
       }
     }
