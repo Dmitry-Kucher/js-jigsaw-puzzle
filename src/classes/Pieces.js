@@ -10,39 +10,49 @@ export default class Pieces {
 
   addPiece(piece) {
     if (piece instanceof Piece) {
-      const piecePosition = Object.keys(this.pieces).length;
-      piece.setPosition(piecePosition);
-      this.pieces[piecePosition] = piece;
+      const piecePositions = Object.keys(this.pieces).length;
+      piece.setPosition(piecePositions);
+      this.pieces[piecePositions] = piece;
     } else {
       throw new Error('Piece isn\'t instance of Piece');
     }
   }
 
-  static isNeighbours({ colLength, currentElementPosition, targetElementPosition }) {
+  static isNeighbours({ colLength, currentElementPositions, targetElementPositions }) {
     const params = {
       colLength,
-      currentElementPosition,
-      targetElementPosition,
+      currentElementPositions,
+      targetElementPositions,
     };
     return Pieces.isVerticalNeighbours(params) || Pieces.isHorizontalNeighbours(params);
   }
 
-  static isVerticalNeighbours({ colLength, currentElementPosition, targetElementPosition }) {
-    const positionsDiff = Math.abs(currentElementPosition - targetElementPosition);
-
-    return positionsDiff === colLength;
+  static isVerticalNeighbours({ colLength, currentElementPositions, targetElementPositions }) {
+    for(const currentElementPosition of currentElementPositions) {
+      for (const targetElementPosition of targetElementPositions) {
+        const positionsDiff = Math.abs(currentElementPosition - targetElementPosition);
+        if(positionsDiff === colLength) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
-  static isHorizontalNeighbours({ colLength, currentElementPosition, targetElementPosition }) {
-    const positionsDiff = Math.abs(currentElementPosition - targetElementPosition);
+  static isHorizontalNeighbours({ colLength, currentElementPositions, targetElementPositions }) {
+    for(const currentElementPosition of currentElementPositions) {
+      for (const targetElementPosition of targetElementPositions) {
+        const positionsDiff = Math.abs(currentElementPosition - targetElementPosition);
+        if (positionsDiff === 1) {
+          const currentRow = Math.floor(currentElementPosition / colLength);
+          const targetRow = Math.floor(targetElementPosition / colLength);
 
-    if (positionsDiff === 1) {
-      const currentRow = Math.floor(currentElementPosition / colLength);
-      const targetRow = Math.floor(targetElementPosition / colLength);
-
-      return currentRow === targetRow;
+          if(currentRow === targetRow) {
+            return true;
+          }
+        }
+      }
     }
-
     return false;
   }
 

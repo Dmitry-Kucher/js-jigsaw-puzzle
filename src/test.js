@@ -26,7 +26,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const last = (i === (piecesLength - 1));
     i += 1;
 
-    const drawCallback = Piece.drawCallback.bind(null, { canvas, last, piecePosition });
+    const piecePositions = [piecePosition];
+    const drawCallback = Piece.drawCallback.bind(null, { canvas, last, piecePositions });
 
     fabric.Image.fromURL(piece.getContent(), drawCallback);
   }
@@ -39,8 +40,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       const positionsData = {
         colLength,
-        currentElementPosition: activeObject.piecePosition,
-        targetElementPosition: targ.piecePosition,
+        currentElementPositions: activeObject.piecePositions,
+        targetElementPositions: targ.piecePositions,
       };
 
       let left;
@@ -72,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
       if (Pieces.isVerticalNeighbours(positionsData)) {
-        const horizontalDiff = Math.abs(activeObject.aCoords.tl.y - targ.aCoords.tl.y);
+        const horizontalDiff = Math.abs(activeObject.aCoords.tl.x - targ.aCoords.tl.x);
         const horizontalPercent = 50;
 
         if (horizontalDiff < (horizontalPercent / 100) * activeObject.width) {
@@ -104,6 +105,8 @@ document.addEventListener('DOMContentLoaded', () => {
           top: groupTop,
           hasControls: false,
         });
+
+        testGroup.set('piecePositions', activeObject.piecePositions.concat(targ.piecePositions));
 
         canvas.add(testGroup);
         canvas.remove(activeObject);
