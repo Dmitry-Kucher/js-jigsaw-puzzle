@@ -37,13 +37,10 @@ export default class Pieces {
     const positionsDiff = Math.abs(currentElementPosition - targetElementPosition);
 
     if (positionsDiff === 1) {
-      if (currentElementPosition - targetElementPosition > 0) {
-        const currentElementPositionRemainder = currentElementPosition % colLength;
-        return currentElementPositionRemainder !== 0;
-      }
+      const currentRow = Math.floor(currentElementPosition / colLength);
+      const targetRow = Math.floor(targetElementPosition / colLength);
 
-      const targetElementPositionRemainder = targetElementPosition % colLength;
-      return targetElementPositionRemainder !== 0;
+      return currentRow === targetRow;
     }
 
     return false;

@@ -47,6 +47,9 @@ document.addEventListener('DOMContentLoaded', () => {
       let top;
       let groupLeft;
       let groupTop;
+      if (Pieces.isNeighbours(positionsData)) {
+        console.log('neighbours');
+      }
       if (Pieces.isHorizontalNeighbours(positionsData)) {
         const verticalDiff = Math.abs(activeObject.aCoords.tl.y - targ.aCoords.tl.y);
         const verticalPercent = 50;
