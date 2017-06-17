@@ -21,12 +21,10 @@ export default class Image {
   }
 
   splitImageToPieces({ colLength = 6, rowLength = 6 } = {}) {
-    const numberOfCols = colLength;
-    const numberOfRows = rowLength;
-    const colSize = this.imageInstance.getWidth() / numberOfCols;
-    const rowSize = this.imageInstance.getHeight() / numberOfRows;
-    for (let rows = 0; rows < numberOfRows; rows += 1) {
-      for (let cols = 0; cols < numberOfCols; cols += 1) {
+    const colSize = this.imageInstance.getWidth() / colLength;
+    const rowSize = this.imageInstance.getHeight() / rowLength;
+    for (let rows = 0; rows < rowLength; rows += 1) {
+      for (let cols = 0; cols < colLength; cols += 1) {
         const dataUrl = this.imageInstance.toDataURL({
           left: colSize * cols,
           top: rowSize * rows,
@@ -34,7 +32,6 @@ export default class Image {
           height: rowSize,
         });
         const piece = new Piece(dataUrl);
-        piece.setSteps({ colLength, rowLength });
         this.imagePieces.addPiece(piece);
       }
     }

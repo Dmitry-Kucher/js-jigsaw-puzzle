@@ -12,6 +12,10 @@ document.addEventListener('DOMContentLoaded', () => {
     backgroundColor: '#0f0',
   });
 
+  canvas.on('object:selected', (e) => {
+    window.selectedObjectPositions = { left: e.target.left, top: e.target.top };
+  });
+
   const imageSelector = '[jjp-image]';
   const image = new Image(imageSelector);
   const colLength = 8;
@@ -38,24 +42,27 @@ document.addEventListener('DOMContentLoaded', () => {
       if (targ === activeObject || !activeObject) {
         return;
       }
+      const currentElementPositions = Pieces.getPositions(activeObject);
+      const targetElementPositions = Pieces.getPositions(targ);
       const positionsData = {
         colLength,
-        currentElementPositions: activeObject.piecePositions,
-        targetElementPositions: targ.piecePositions,
+        currentElementPositions,
+        targetElementPositions,
       };
 
       let left;
       let top;
       let groupLeft;
       let groupTop;
-      if (Pieces.isNeighbours(positionsData)) {
-        console.log('neighbours');
-      }
-      if (Pieces.isHorizontalNeighbours(positionsData)) {
+      const horizontalNeighbourPositions = Pieces.getHorizontalNeighboursPositionsIfExists(positionsData);
+      if (horizontalNeighbourPositions) {
+        console.log(horizontalNeighbourPositions);
+
         const verticalDiff = Math.abs(activeObject.aCoords.tl.y - targ.aCoords.tl.y);
         const verticalPercent = 50;
 
         if (verticalDiff < (verticalPercent / 100) * activeObject.height) {
+          console.log('horizontal');
           const fromLeft = Math.abs(activeObject.aCoords.tr.x - targ.aCoords.tl.x);
           const fromRight = Math.abs(activeObject.aCoords.tl.x - targ.aCoords.tr.x);
 
@@ -72,11 +79,13 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         }
       }
-      if (Pieces.isVerticalNeighbours(positionsData)) {
+      if (Pieces.getVerticalNeighboursPositionsIfExists(positionsData)) {
         const horizontalDiff = Math.abs(activeObject.aCoords.tl.x - targ.aCoords.tl.x);
         const horizontalPercent = 50;
 
         if (horizontalDiff < (horizontalPercent / 100) * activeObject.width) {
+          console.log('vertical');
+
           const fromTop = Math.abs(activeObject.aCoords.bl.y - targ.aCoords.tl.y);
           const fromBottom = Math.abs(activeObject.aCoords.tl.y - targ.aCoords.bl.y);
 
@@ -106,7 +115,9 @@ document.addEventListener('DOMContentLoaded', () => {
           hasControls: false,
         });
 
-        testGroup.set('piecePositions', activeObject.piecePositions.concat(targ.piecePositions));
+        const groupPiecesPositions = activeObject.piecePositions.concat(targ.piecePositions);
+        testGroup.set('groupPositionsDescription', Pieces.getGroupPositionsDescription(groupPiecesPositions, colLength));
+        console.log('group', testGroup.getObjects());
 
         canvas.add(testGroup);
         canvas.remove(activeObject);

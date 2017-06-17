@@ -18,20 +18,20 @@ export default class Pieces {
     }
   }
 
-  static isNeighbours({ colLength, currentElementPositions, targetElementPositions }) {
+  static getNeighboursPositionsIfExists({ colLength, currentElementPositions, targetElementPositions }) {
     const params = {
       colLength,
       currentElementPositions,
       targetElementPositions,
     };
-    return Pieces.isVerticalNeighbours(params) || Pieces.isHorizontalNeighbours(params);
+    return Pieces.getVerticalNeighboursPositionsIfExists(params) || Pieces.getHorizontalNeighboursPositionsIfExists(params);
   }
 
-  static isVerticalNeighbours({ colLength, currentElementPositions, targetElementPositions }) {
-    for(const currentElementPosition of currentElementPositions) {
+  static getVerticalNeighboursPositionsIfExists({ colLength, currentElementPositions, targetElementPositions }) {
+    for (const currentElementPosition of currentElementPositions) {
       for (const targetElementPosition of targetElementPositions) {
         const positionsDiff = Math.abs(currentElementPosition - targetElementPosition);
-        if(positionsDiff === colLength) {
+        if (positionsDiff === colLength) {
           return true;
         }
       }
@@ -39,21 +39,59 @@ export default class Pieces {
     return false;
   }
 
-  static isHorizontalNeighbours({ colLength, currentElementPositions, targetElementPositions }) {
-    for(const currentElementPosition of currentElementPositions) {
+  static getHorizontalNeighboursPositionsIfExists({ colLength, currentElementPositions, targetElementPositions }) {
+    for (const currentElementPosition of currentElementPositions) {
       for (const targetElementPosition of targetElementPositions) {
         const positionsDiff = Math.abs(currentElementPosition - targetElementPosition);
         if (positionsDiff === 1) {
           const currentRow = Math.floor(currentElementPosition / colLength);
           const targetRow = Math.floor(targetElementPosition / colLength);
 
-          if(currentRow === targetRow) {
-            return true;
+          if (currentRow === targetRow) {
+            return [currentElementPosition, targetElementPosition];
           }
         }
       }
     }
     return false;
+  }
+
+  static getGroupPositionsDescription(groupPiecePositions, colLength) {
+    const rows = [];
+    const cols = [];
+    groupPiecePositions.forEach((value) => {
+      rows.push(Math.floor(value / colLength));
+      cols.push(value % colLength);
+    });
+    console.log({
+      topRow: Math.max(...rows),
+      rightCol: Math.max(...cols),
+      bottomRow: Math.min(...rows),
+      leftCol: Math.min(...cols),
+    });
+    return {
+      topRow: Math.max(...rows),
+      rightCol: Math.max(...cols),
+      bottomRow: Math.min(...rows),
+      leftCol: Math.min(...cols),
+    };
+  }
+
+  static getPositions(object) {
+    return object.piecePositions || Pieces.getGroupPositions(object);
+  }
+
+  static getGroupPositions(object) {
+    const groupObjects = object.getObjects();
+    const positions = [];
+    if (groupObjects) {
+      for (const item of groupObjects) {
+        if (item.piecePositions) {
+          positions.push(item.piecePositions);
+        }
+      }
+    }
+    return positions;
   }
 
   getPieces() {

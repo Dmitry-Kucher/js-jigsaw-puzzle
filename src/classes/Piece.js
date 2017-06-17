@@ -36,7 +36,23 @@ export default class Piece {
     img.set('left', left);
     img.set('piecePositions', piecePositions);
 
-    img.on('modified', () => { console.log(img.piecePosition); });
+    /*
+    img.on('moving', () => {
+      canvas.forEachObject((targ) => {
+        const activeObject = canvas.getActiveObject();
+        if (targ === activeObject || !activeObject) {
+          return;
+        }
+        const diffLeft = activeObject.left - window.selectedObjectPositions.left;
+        const diffTop = activeObject.top - window.selectedObjectPositions.top;
+        // window.selectedObjectPositions = { left: activeObject.left, top: activeObject.top };
+        console.log(diffLeft, diffTop);
+        targ.set({ left: targ.left + diffLeft, top: targ.top + diffTop });
+        // targ.setCoords();
+        // canvas.renderAll();
+      });
+    });
+    */
 
     canvas.add(img);
     if (last) {
