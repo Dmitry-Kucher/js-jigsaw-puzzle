@@ -8,6 +8,7 @@ const options = {
   rows: 8,
   cols: 8,
   imageSelector: '[jjp-image]',
+  neighboursSensitivity: 20,
 };
 const gameLoop = new Gameloop(options);
 

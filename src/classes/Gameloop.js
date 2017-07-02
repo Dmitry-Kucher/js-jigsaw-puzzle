@@ -33,7 +33,14 @@ export default class Gameloop {
           if (potential === activeObject || !activeObject) {
             return;
           }
-          const potentialNeighbours = this.getNeighbours(potential);
+
+          if (!this.isClosest(activeObject, potential)) {
+            return;
+          }
+
+          if (Gameloop.isNeighbour(activeObjectNeighbours, potential)) {
+            Gameloop.drawGroup(activeObjectNeighbours, potential);
+          }
         });
       });
     });
@@ -101,5 +108,62 @@ export default class Gameloop {
       });
     }
     return neighbours;
+  }
+
+  isClosest(current, potential) {
+    const activeObjectItems = current instanceof fabric.Group ? current.getObjects() : [current];
+    const potentialItems = potential instanceof fabric.Group ? potential.getObjects() : [potential];
+
+    for (const activeItem of activeObjectItems) {
+      for (const potentialItem of potentialItems) {
+        if (this.isPiecesClose(activeItem, potentialItem)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  isPiecesClose(firstPiece, secondPiece) {
+    const options = this.getOptions();
+    const closestSensitivity = options.neighboursSensitivity;
+    let xDifference = Math.abs(firstPiece.aCoords.tr.x - secondPiece.aCoords.tl.x);
+    let yDifference = Math.abs(firstPiece.aCoords.tr.y - secondPiece.aCoords.tl.y);
+    if (xDifference < closestSensitivity && yDifference < closestSensitivity) {
+      return true;
+    }
+
+    xDifference = Math.abs(firstPiece.aCoords.tl.x - secondPiece.aCoords.tr.x);
+    yDifference = Math.abs(firstPiece.aCoords.tl.y - secondPiece.aCoords.tr.y);
+    if (xDifference < closestSensitivity && yDifference < closestSensitivity) {
+      return true;
+    }
+
+    xDifference = Math.abs(firstPiece.aCoords.bl.x - secondPiece.aCoords.tl.x);
+    yDifference = Math.abs(firstPiece.aCoords.bl.y - secondPiece.aCoords.tl.y);
+    if (xDifference < closestSensitivity && yDifference < closestSensitivity) {
+      return true;
+    }
+
+    xDifference = Math.abs(firstPiece.aCoords.tl.x - secondPiece.aCoords.bl.x);
+    yDifference = Math.abs(firstPiece.aCoords.tl.y - secondPiece.aCoords.bl.y);
+    return xDifference < closestSensitivity && yDifference < closestSensitivity;
+  }
+
+  static isNeighbour(activeObjectNeighbours, potential) {
+    if (potential instanceof fabric.Group) {
+      for (const potentialItem of potential.getObjects()) {
+        if (activeObjectNeighbours.indexOf(potentialItem.piecePosition) !== -1) {
+          return true;
+        }
+      }
+    } else if (potential.piecePosition) {
+      return activeObjectNeighbours.indexOf(potential.piecePosition) !== -1;
+    }
+    return false;
+  }
+
+  static drawGroup(activObject, potential) {
+    
   }
 }
