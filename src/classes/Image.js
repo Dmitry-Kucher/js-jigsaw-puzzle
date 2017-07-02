@@ -2,18 +2,18 @@
  * Created by dima on 09/06/2017.
  */
 import Piece from './Piece';
-import Pieces from './Pieces';
+import Composition from './Composition';
 
 export default class Image {
   constructor(selector) {
     const imageSelector = `img${selector}`;
     this.imageElement = document.querySelector(imageSelector);
     if (!this.imageElement) {
-      throw new Error(`There is no img element with provided selector ${imageSelector}`);
+      throw Error(`There is no img element with provided selector ${imageSelector}`);
     }
 
     this.imageInstance = this.getFabricImageInstance();
-    this.imagePieces = new Pieces();
+    this.imagePieces = new Composition();
   }
 
   getFabricImageInstance() {
@@ -31,7 +31,11 @@ export default class Image {
           width: colSize,
           height: rowSize,
         });
-        const piece = new Piece(dataUrl);
+        const pieceOptions = {
+          content: dataUrl,
+          position: rows * cols,
+        };
+        const piece = new Piece(pieceOptions);
         this.imagePieces.addPiece(piece);
       }
     }

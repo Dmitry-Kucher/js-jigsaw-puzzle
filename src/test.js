@@ -1,10 +1,19 @@
 /**
  * Created by dima on 18/05/2017.
  */
-import Image from './classes/Image';
-import Piece from './classes/Piece';
-import Pieces from './classes/Pieces';
+import Gameloop from './classes/Gameloop';
 
+const options = {
+  canvasId: 'c',
+  rows: 8,
+  cols: 8,
+  imageSelector: '[jjp-image]',
+};
+const gameLoop = new Gameloop(options);
+
+gameLoop.start();
+
+/*
 document.addEventListener('DOMContentLoaded', () => {
   const collisionValue = 48;
   const canvas = new fabric.Canvas('c', {
@@ -142,3 +151,4 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
+*/
