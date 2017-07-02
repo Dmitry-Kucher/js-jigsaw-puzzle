@@ -32,7 +32,7 @@ export default class Pieces {
       for (const targetElementPosition of targetElementPositions) {
         const positionsDiff = Math.abs(currentElementPosition - targetElementPosition);
         if (positionsDiff === colLength) {
-          return true;
+          return targetElementPosition;
         }
       }
     }
@@ -48,7 +48,7 @@ export default class Pieces {
           const targetRow = Math.floor(targetElementPosition / colLength);
 
           if (currentRow === targetRow) {
-            return [currentElementPosition, targetElementPosition];
+            return targetElementPosition;
           }
         }
       }
@@ -82,16 +82,22 @@ export default class Pieces {
   }
 
   static getGroupPositions(object) {
-    const groupObjects = object.getObjects();
     const positions = [];
-    if (groupObjects) {
-      for (const item of groupObjects) {
-        if (item.piecePositions) {
-          positions.push(item.piecePositions);
+    if (object instanceof fabric.Group) {
+      const groupObjects = object.getObjects();
+      if (groupObjects) {
+        for (const item of groupObjects) {
+          if (item.piecePositions) {
+            positions.push(item.piecePositions);
+          }
         }
       }
     }
     return positions;
+  }
+
+  static extractItemsFromGroup(object) {
+    return (object instanceof fabric.Group) ? object.getObjects() : [object];
   }
 
   getPieces() {

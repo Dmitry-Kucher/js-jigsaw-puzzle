@@ -56,13 +56,24 @@ document.addEventListener('DOMContentLoaded', () => {
       let groupTop;
       const horizontalNeighbourPositions = Pieces.getHorizontalNeighboursPositionsIfExists(positionsData);
       if (horizontalNeighbourPositions) {
-        console.log(horizontalNeighbourPositions);
+        if (targ instanceof fabric.Group) {
+          const groupObjects = targ.getObjects();
+          if (groupObjects) {
+            for (const obj of groupObjects) {
+              const positions = Pieces.getPositions(obj);
+              console.log(positions, horizontalNeighbourPositions);
+              if (positions.indexOf(horizontalNeighbourPositions) !== -1) {
+                console.log('targ reassigned');
+                targ = obj;
+              }
+            }
+          }
+        }
 
         const verticalDiff = Math.abs(activeObject.aCoords.tl.y - targ.aCoords.tl.y);
         const verticalPercent = 50;
 
         if (verticalDiff < (verticalPercent / 100) * activeObject.height) {
-          console.log('horizontal');
           const fromLeft = Math.abs(activeObject.aCoords.tr.x - targ.aCoords.tl.x);
           const fromRight = Math.abs(activeObject.aCoords.tl.x - targ.aCoords.tr.x);
 
@@ -84,8 +95,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const horizontalPercent = 50;
 
         if (horizontalDiff < (horizontalPercent / 100) * activeObject.width) {
-          console.log('vertical');
-
           const fromTop = Math.abs(activeObject.aCoords.bl.y - targ.aCoords.tl.y);
           const fromBottom = Math.abs(activeObject.aCoords.tl.y - targ.aCoords.bl.y);
 
@@ -109,19 +118,26 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       if (groupLeft || groupTop) {
-        const testGroup = new fabric.Group([activeObject, targ], {
+        let groupItems = [];
+
+        const activeObjectItems = Pieces.extractItemsFromGroup(activeObject);
+        const targObjectItems = Pieces.extractItemsFromGroup(targ);
+        groupItems = groupItems.concat(activeObjectItems, targObjectItems);
+        const testGroup = new fabric.Group(groupItems, {
           left: groupLeft,
           top: groupTop,
           hasControls: false,
         });
 
-        const groupPiecesPositions = activeObject.piecePositions.concat(targ.piecePositions);
+        const activeObjectPositions = Pieces.getPositions(activeObject);
+        const targObjectPositions = Pieces.getPositions(targ);
+        const groupPiecesPositions = [].concat(activeObjectPositions, targObjectPositions);
         testGroup.set('groupPositionsDescription', Pieces.getGroupPositionsDescription(groupPiecesPositions, colLength));
-        console.log('group', testGroup.getObjects());
 
         canvas.add(testGroup);
         canvas.remove(activeObject);
         canvas.remove(targ);
+        canvas.renderAll();
       }
     });
   });
