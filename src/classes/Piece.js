@@ -10,4 +10,12 @@ export default class Piece {
     this.getPosition = () => position;
     return this.getContent();
   }
+
+  getRow(cols) {
+    return Math.floor(this.getPosition() / cols);
+  }
+
+  getCol(cols) {
+    return this.getPosition() % cols;
+  }
 }

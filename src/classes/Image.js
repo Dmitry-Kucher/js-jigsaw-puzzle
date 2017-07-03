@@ -23,17 +23,17 @@ export default class Image {
   splitImageToPieces({ colLength = 6, rowLength = 6 } = {}) {
     const colSize = this.imageInstance.getWidth() / colLength;
     const rowSize = this.imageInstance.getHeight() / rowLength;
-    for (let rows = 0; rows < rowLength; rows += 1) {
-      for (let cols = 0; cols < colLength; cols += 1) {
+    for (let row = 0; row < rowLength; row += 1) {
+      for (let col = 0; col < colLength; col += 1) {
         const dataUrl = this.imageInstance.toDataURL({
-          left: colSize * cols,
-          top: rowSize * rows,
+          left: colSize * col,
+          top: rowSize * row,
           width: colSize,
           height: rowSize,
         });
         const pieceOptions = {
           content: dataUrl,
-          position: rows * cols,
+          position: row * col,
         };
         const piece = new Piece(pieceOptions);
         this.imagePieces.addPiece(piece);

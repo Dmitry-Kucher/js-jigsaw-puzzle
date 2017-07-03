@@ -39,7 +39,7 @@ export default class Gameloop {
           }
 
           if (Gameloop.isNeighbour(activeObjectNeighbours, potential)) {
-            Gameloop.drawGroup(activeObjectNeighbours, potential);
+            this.drawGroup(activeObject, potential);
           }
         });
       });
@@ -163,7 +163,29 @@ export default class Gameloop {
     return false;
   }
 
-  static drawGroup(activObject, potential) {
-    
+  drawGroup(activObject, potential) {
+    const canvas = this.getCanvas();
+    const groupItems = [];
+    const options = this.getOptions();
+    // baseElement is the potential element itself or first element from group;
+    const baseELement = potential instanceof fabric.Group ? potential.getObjects()[0] : potential;
+    const col = baseELement.piecePosition % options.cols;
+    const row = Math.floor(baseELement.piecePosition / options.cols);
+    const zeroDisplacementX = col * baseELement.getWidth();
+    const zeroDisplacementY = row * baseELement.getHeight();
+    const xDisplacement = baseELement.left - zeroDisplacementX;
+    const yDisplacement = baseELement.top - zeroDisplacementY;
+
+    // activObject.top = col * activObject.getWidth()
+    // groupItems.push(activObject, potential);
+
+    const testGroup = new fabric.Group(groupItems, {
+      hasControls: false,
+    });
+    canvas.add(testGroup);
+    // canvas.remove(activeObject);
+    // canvas.remove(targ);
+    canvas.renderAll();
+    console.log('rendered');
   }
 }
