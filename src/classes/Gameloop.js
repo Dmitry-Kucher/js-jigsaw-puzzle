@@ -163,29 +163,61 @@ export default class Gameloop {
     return false;
   }
 
-  drawGroup(activObject, potential) {
+  drawGroup(activeObject, potential) {
     const canvas = this.getCanvas();
     const groupItems = [];
+    const piecePositions = [];
     const options = this.getOptions();
-    // baseElement is the potential element itself or first element from group;
-    const baseELement = potential instanceof fabric.Group ? potential.getObjects()[0] : potential;
-    const col = baseELement.piecePosition % options.cols;
-    const row = Math.floor(baseELement.piecePosition / options.cols);
-    const zeroDisplacementX = col * baseELement.getWidth();
-    const zeroDisplacementY = row * baseELement.getHeight();
-    const xDisplacement = baseELement.left - zeroDisplacementX;
-    const yDisplacement = baseELement.top - zeroDisplacementY;
+    const baseElements = potential instanceof fabric.Group ? potential.getObjects() : [potential];
+    const activeObjects = activeObject instanceof fabric.Group ? activeObject.getObjects() : [activeObject];
 
-    // activObject.top = col * activObject.getWidth()
-    // groupItems.push(activObject, potential);
+    // baseElement is the potential element itself or first element from group;
+    const baseElement = baseElements[0];
+    const { col, row } = Gameloop.extractCoordinates(baseElement, options.cols);
+    const zeroDisplacementX = col * baseElement.getWidth();
+    const zeroDisplacementY = row * baseElement.getHeight();
+    const xDisplacement = baseElement.left - zeroDisplacementX;
+    const yDisplacement = baseElement.top - zeroDisplacementY;
+
+    const itemDecompose = (activePiece) => {
+      const movedPiece = this.recalculatePiecePositions({
+        obj: activePiece,
+        xDisplacement,
+        yDisplacement,
+      });
+      piecePositions.push(activePiece.piecePosition);
+      groupItems.push(movedPiece);
+    };
+
+    activeObjects.forEach(itemDecompose);
+    baseElements.forEach(itemDecompose);
 
     const testGroup = new fabric.Group(groupItems, {
       hasControls: false,
     });
+    testGroup.set('piecePositions', piecePositions);
     canvas.add(testGroup);
     // canvas.remove(activeObject);
     // canvas.remove(targ);
     canvas.renderAll();
     console.log('rendered');
+  }
+
+  recalculatePiecePositions({ obj, xDisplacement, yDisplacement }) {
+    const options = this.getOptions();
+    const { col, row } = Gameloop.extractCoordinates(obj, options.cols);
+    const localObj = obj;
+    const zeroDisplacementTop = row * localObj.getHeight();
+    const zeroDisplacementLeft = col * localObj.getWidth();
+    localObj.top = zeroDisplacementTop + yDisplacement;
+    localObj.left = zeroDisplacementLeft + xDisplacement;
+
+    return localObj;
+  }
+
+  static extractCoordinates(obj, cols) {
+    const col = obj.piecePosition % cols;
+    const row = Math.floor(obj.piecePosition / cols);
+    return { col, row };
   }
 }
