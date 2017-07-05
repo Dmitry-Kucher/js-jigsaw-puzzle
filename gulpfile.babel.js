@@ -76,12 +76,14 @@ gulp.task('compile', () => gulp.src(['src/classes/*.js', 'src/*.js'], { base: '.
 
 gulp.task('browserify', () => {
   browserify({ debug: true })
-    .transform(babelify)
+    .transform(babelify, {
+      sourceMaps: true,
+    })
     .require('src/test.js', { entry: true })
     .bundle()
     .pipe(source('bundle.js'))
     .pipe(buffer())
-    .pipe(sourcemaps.init())
+    .pipe(sourcemaps.init({ loadMaps: true }))
     .pipe(gulpif(gutil.env.production, uglify()))
     .pipe(gulpif(!gutil.env.production, sourcemaps.write('.')))
     .pipe(gulp.dest('app/dist'));

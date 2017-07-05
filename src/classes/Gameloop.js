@@ -27,9 +27,15 @@ export default class Gameloop {
       this.setCanvas(canvas);
       this.drawPieces();
       canvas.on('object:modified', () => {
+        console.log('modified');
         const activeObject = canvas.getActiveObject();
         const activeObjectNeighbours = this.getNeighbours(activeObject);
+        console.log(activeObjectNeighbours);
+        let isMerged = false;
         canvas.forEachObject((potential) => {
+          if (isMerged) {
+            return;
+          }
           if (potential === activeObject || !activeObject) {
             return;
           }
@@ -39,7 +45,11 @@ export default class Gameloop {
           }
 
           if (Gameloop.isNeighbour(activeObjectNeighbours, potential)) {
+            console.log('removed');
+            isMerged = true;
             this.drawGroup(activeObject, potential);
+            canvas.remove(activeObject);
+            canvas.remove(potential);
           }
         });
       });
@@ -157,7 +167,7 @@ export default class Gameloop {
           return true;
         }
       }
-    } else if (potential.piecePosition) {
+    } else if (typeof potential.piecePosition !== 'undefined') {
       return activeObjectNeighbours.indexOf(potential.piecePosition) !== -1;
     }
     return false;
@@ -176,8 +186,8 @@ export default class Gameloop {
     const { col, row } = Gameloop.extractCoordinates(baseElement, options.cols);
     const zeroDisplacementX = col * baseElement.getWidth();
     const zeroDisplacementY = row * baseElement.getHeight();
-    const xDisplacement = baseElement.left - zeroDisplacementX;
-    const yDisplacement = baseElement.top - zeroDisplacementY;
+    const xDisplacement = baseElement.aCoords.tl.x - zeroDisplacementX;
+    const yDisplacement = baseElement.aCoords.tl.y - zeroDisplacementY;
 
     const itemDecompose = (activePiece) => {
       const movedPiece = this.recalculatePiecePositions({
@@ -198,9 +208,9 @@ export default class Gameloop {
     testGroup.set('piecePositions', piecePositions);
     canvas.add(testGroup);
     // canvas.remove(activeObject);
-    // canvas.remove(targ);
+    // canvas.remove(potential);
     canvas.renderAll();
-    console.log('rendered');
+    console.log('rendered', testGroup.top, testGroup.left);
   }
 
   recalculatePiecePositions({ obj, xDisplacement, yDisplacement }) {
