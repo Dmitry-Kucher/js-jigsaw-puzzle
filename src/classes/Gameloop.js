@@ -4,6 +4,7 @@
 import Image from './Image';
 import Gamefield from './Gamefield';
 import Piece from './Piece';
+import RecalculatedObjectsGroup from './RecalculatedObjectsGroup';
 
 export default class Gameloop {
   constructor(options) {
@@ -22,15 +23,17 @@ export default class Gameloop {
   start() {
     document.addEventListener('DOMContentLoaded', () => {
       const options = this.getOptions();
-      const gamefield = new Gamefield({ canvasId: options.canvasId });
+      const gamefield = new Gamefield({
+        width: 1420,
+        height: 2048,
+        canvasId: options.canvasId,
+      });
       const canvas = gamefield.getCanvas();
       this.setCanvas(canvas);
-      this.drawPieces();
+      this.drawPieces(options.scale);
       canvas.on('object:modified', () => {
-        console.log('modified');
         const activeObject = canvas.getActiveObject();
         const activeObjectNeighbours = this.getNeighbours(activeObject);
-        console.log(activeObjectNeighbours);
         let isMerged = false;
         canvas.forEachObject((potential) => {
           if (isMerged) {
@@ -45,7 +48,6 @@ export default class Gameloop {
           }
 
           if (Gameloop.isNeighbour(activeObjectNeighbours, potential)) {
-            console.log('removed');
             isMerged = true;
             this.drawGroup(activeObject, potential);
             canvas.remove(activeObject);
@@ -56,7 +58,7 @@ export default class Gameloop {
     });
   }
 
-  drawPieces() {
+  drawPieces(scale = 1) {
     const options = this.getOptions();
     const canvas = this.getCanvas();
     const image = new Image(options.imageSelector);
@@ -66,13 +68,13 @@ export default class Gameloop {
 
     pieces.forEach((piece, piecePosition) => {
       const last = piecePosition === (pieces.length - 1);
-      const drawCallback = Gameloop.drawCallback.bind(null, { canvas, last, piecePosition });
+      const drawCallback = Gameloop.drawCallback.bind(null, { canvas, last, piecePosition, scale });
       fabric.Image.fromURL(piece.getContent(), drawCallback);
     });
   }
 
   static drawCallback(additionalParams, img) {
-    const { canvas, last, piecePosition } = additionalParams;
+    const { canvas, last, piecePosition, scale } = additionalParams;
     const top = fabric.util.getRandomInt(0, 600);
     const left = fabric.util.getRandomInt(0, 600);
 
@@ -80,6 +82,7 @@ export default class Gameloop {
     img.set('top', top);
     img.set('left', left);
     img.set('piecePosition', piecePosition);
+    img.scale(scale);
 
     canvas.add(img);
     if (last) {
@@ -186,23 +189,23 @@ export default class Gameloop {
     const { col, row } = Gameloop.extractCoordinates(baseElement, options.cols);
     const zeroDisplacementX = col * baseElement.getWidth();
     const zeroDisplacementY = row * baseElement.getHeight();
-    const xDisplacement = baseElement.aCoords.tl.x - zeroDisplacementX;
-    const yDisplacement = baseElement.aCoords.tl.y - zeroDisplacementY;
+    const xDisplacement = baseElement.left - zeroDisplacementX;
+    const yDisplacement = baseElement.top - zeroDisplacementY;
 
     const itemDecompose = (activePiece) => {
-      const movedPiece = this.recalculatePiecePositions({
+      this.recalculatePiecePositions({
         obj: activePiece,
         xDisplacement,
         yDisplacement,
       });
       piecePositions.push(activePiece.piecePosition);
-      groupItems.push(movedPiece);
+      groupItems.push(activePiece);
     };
 
     activeObjects.forEach(itemDecompose);
     baseElements.forEach(itemDecompose);
 
-    const testGroup = new fabric.Group(groupItems, {
+    const testGroup = new RecalculatedObjectsGroup(groupItems, {
       hasControls: false,
     });
     testGroup.set('piecePositions', piecePositions);
@@ -216,13 +219,13 @@ export default class Gameloop {
   recalculatePiecePositions({ obj, xDisplacement, yDisplacement }) {
     const options = this.getOptions();
     const { col, row } = Gameloop.extractCoordinates(obj, options.cols);
-    const localObj = obj;
-    const zeroDisplacementTop = row * localObj.getHeight();
-    const zeroDisplacementLeft = col * localObj.getWidth();
-    localObj.top = zeroDisplacementTop + yDisplacement;
-    localObj.left = zeroDisplacementLeft + xDisplacement;
-
-    return localObj;
+    const zeroDisplacementTop = row * obj.getHeight();
+    const zeroDisplacementLeft = col * obj.getWidth();
+    const recalculatedTop = zeroDisplacementTop + yDisplacement;
+    const recalculatedLeft = zeroDisplacementLeft + xDisplacement;
+    obj.setTop(recalculatedTop);
+    obj.setLeft(recalculatedLeft);
+    obj.setCoords();
   }
 
   static extractCoordinates(obj, cols) {
