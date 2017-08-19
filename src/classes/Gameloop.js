@@ -219,6 +219,11 @@ export default class Gameloop {
     itemsRecalculableGroup.set('piecePositions', piecePositions);
     canvas.add(itemsRecalculableGroup);
     canvas.renderAll();
+
+    // recalculated group objects coordinates
+    // it prevents to disappearing group object after merge
+    itemsRecalculableGroup.trigger('selected');
+    itemsRecalculableGroup.trigger('recalculate');
   }
 
   recalculatePiecePositions({ obj, xDisplacement, yDisplacement }) {
