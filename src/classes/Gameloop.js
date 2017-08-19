@@ -3,7 +3,6 @@
  */
 import Image from './Image';
 import Gamefield from './Gamefield';
-import Piece from './Piece';
 import RecalculatedObjectsGroup from './RecalculatedObjectsGroup';
 
 export default class Gameloop {
@@ -31,8 +30,15 @@ export default class Gameloop {
       const canvas = gamefield.getCanvas();
       this.setCanvas(canvas);
       this.drawPieces(options.scale);
+      canvas.on('object:selected', () => {
+        if (window.debugApp) {
+          const activeObject = canvas.getActiveObject();
+          console.log(activeObject);
+        }
+      });
       canvas.on('object:modified', () => {
         const activeObject = canvas.getActiveObject();
+        activeObject.trigger('recalculate');
         const activeObjectNeighbours = this.getNeighbours(activeObject);
         let isMerged = false;
         canvas.forEachObject((potential) => {
@@ -75,10 +81,11 @@ export default class Gameloop {
 
   static drawCallback(additionalParams, img) {
     const { canvas, last, piecePosition, scale } = additionalParams;
-    const top = fabric.util.getRandomInt(0, 600);
-    const left = fabric.util.getRandomInt(0, 600);
+    const top = fabric.util.getRandomInt(0, 300);
+    const left = fabric.util.getRandomInt(0, 300);
 
     img.set('hasControls', false);
+    img.set('hasBorders', false);
     img.set('top', top);
     img.set('left', left);
     img.set('piecePosition', piecePosition);
@@ -205,15 +212,13 @@ export default class Gameloop {
     activeObjects.forEach(itemDecompose);
     baseElements.forEach(itemDecompose);
 
-    const testGroup = new RecalculatedObjectsGroup(groupItems, {
+    const itemsRecalculableGroup = new RecalculatedObjectsGroup(groupItems, {
       hasControls: false,
+      hasBorders: false,
     });
-    testGroup.set('piecePositions', piecePositions);
-    canvas.add(testGroup);
-    // canvas.remove(activeObject);
-    // canvas.remove(potential);
+    itemsRecalculableGroup.set('piecePositions', piecePositions);
+    canvas.add(itemsRecalculableGroup);
     canvas.renderAll();
-    console.log('rendered', testGroup.top, testGroup.left);
   }
 
   recalculatePiecePositions({ obj, xDisplacement, yDisplacement }) {
