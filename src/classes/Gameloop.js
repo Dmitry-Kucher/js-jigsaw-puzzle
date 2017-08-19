@@ -22,12 +22,12 @@ export default class Gameloop {
   start() {
     document.addEventListener('DOMContentLoaded', () => {
       const options = this.getOptions();
-      const gamefield = new Gamefield({
+      const gameField = new Gamefield({
         width: 1420,
         height: 2048,
         canvasId: options.canvasId,
       });
-      const canvas = gamefield.getCanvas();
+      const canvas = gameField.getCanvas();
       this.setCanvas(canvas);
       this.drawPieces(options.scale);
       canvas.on('object:selected', () => {

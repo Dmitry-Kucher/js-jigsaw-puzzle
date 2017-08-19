@@ -3,7 +3,8 @@
   "globals": {
     "Image": false,
     "document": false,
-    "fabric": false
+    "fabric": false,
+    "window": false,
   },
   "rules": {
     "no-restricted-syntax": 0,
