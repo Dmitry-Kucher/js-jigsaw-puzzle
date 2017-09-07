@@ -38,6 +38,9 @@ export default class Gameloop {
       });
       canvas.on('object:modified', () => {
         const activeObject = canvas.getActiveObject();
+        if (activeObject instanceof fabric.Path) {
+          return;
+        }
         activeObject.trigger('recalculate');
         const activeObjectNeighbours = this.getNeighbours(activeObject);
         let isMerged = false;
@@ -64,6 +67,24 @@ export default class Gameloop {
     });
   }
 
+  drawSvg(img) {
+    const canvas = this.getCanvas();
+    const path = new fabric.Path(
+      'M85.446,52.284c-3.901,0-5.223-2.17-5.773-3.058c-1.146-1.85-3.291-3.455-5.469-4.268c-1.049-0.251-2.159,0.377-2.165,2.342  v24.737h-0.001v0.001H46.287c-1.978,0.002-2.604,1.122-2.347,2.177c0.815,2.173,2.418,4.312,4.264,5.457  c0.889,0.551,3.058,1.872,3.058,5.772c0,5.277-5.934,9.555-13.253,9.555c-7.32,0-13.254-4.277-13.254-9.555  c0-3.901,2.17-5.222,3.059-5.772c1.848-1.147,3.453-3.291,4.268-5.469c0.249-1.049-0.379-2.159-2.342-2.165H5V47.314  c0-1.977,1.114-2.606,2.166-2.355c2.178,0.812,4.322,2.418,5.47,4.268c0.551,0.888,1.871,3.058,5.772,3.058  c5.278,0,9.556-5.934,9.556-13.254c0-7.319-4.277-13.253-9.556-13.253c-3.901,0-5.222,2.17-5.772,3.059  c-1.146,1.845-3.284,3.447-5.458,4.263C6.122,33.356,5,32.727,5,30.745V5h67.038v0.001L72.039,5v25.759  c0.006,1.97,1.124,2.597,2.177,2.34c2.173-0.815,4.312-2.418,5.457-4.263c0.551-0.889,1.872-3.059,5.773-3.059  c5.276,0,9.554,5.934,9.554,13.253C95,46.351,90.723,52.284,85.446,52.284z',
+      {
+        fill: new fabric.Pattern({
+          source: img,
+        }),
+      },
+    );
+    // const canvas = this.getCanvas();
+    path.set({ top: 150, left: 150 });
+    canvas.add(path);
+    console.log(path);
+    canvas.renderAll();
+    // return path;
+  }
+
   drawPieces(scale = 1) {
     const options = this.getOptions();
     const canvas = this.getCanvas();
@@ -75,7 +96,9 @@ export default class Gameloop {
     pieces.forEach((piece, piecePosition) => {
       const last = piecePosition === (pieces.length - 1);
       const drawCallback = Gameloop.drawCallback.bind(null, { canvas, last, piecePosition, scale });
-      fabric.Image.fromURL(piece.getContent(), drawCallback);
+      const drawSvg = this.drawSvg.bind(this);
+      // fabric.Image.fromURL(piece.getContent(), drawCallback);
+      fabric.util.loadImage(piece.getContent(), drawSvg);
     });
   }
 

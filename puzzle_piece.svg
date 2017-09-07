@@ -1,0 +1,26 @@
+<!--
+translate(<minX+maxX>,0) scale(-1, 1)   // for flip X
+translate(0,<minY+maxY>) scale(1, -1)   // for flip Y
+-->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 100 125" enable-background="new 0 0 100 100" xml:space="preserve">
+  <path transform="translate(15, 0) scale(-1,1)" d="
+    M 10, 0
+    c 0, 0, -2, 0, -3, 2
+    c 0, 2, 2, 4, 4, 5
+    c 0, 0, 3, 2, 3, 6
+    c 0, 5, -6, 10, -13, 10
+    V 23
+    V 0
+    z
+  "/>
+  <path d="
+    M 22, 0
+    c 0, 0, -2, 0, -3, 2
+    c 0, 2, 2, 4, 4, 5
+    c 0, 0, 3, 2, 3, 6
+    c 0, 5, -6, 10, -13, 10
+    V 23
+    V 0
+    z
+  "/>
+</svg>
