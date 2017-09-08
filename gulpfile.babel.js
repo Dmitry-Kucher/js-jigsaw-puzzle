@@ -91,7 +91,7 @@ gulp.task('browserify', () => {
 
 // start webserver to test project
 gulp.task('webserver', ['watch'], () => {
-  gulp.src('app')
+  gulp.src('./')
     .pipe(webserver({
       livereload: true,
       open: true,

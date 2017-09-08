@@ -29,6 +29,7 @@ export default class Gamefield {
     }
     const canvas = new fabric.Canvas(canvasId, {
       renderOnAddRemove: false,
+      selection: false,
       backgroundColor: '#0f0',
       width: this.getWidth(),
       height: this.getHeight(),

@@ -20,7 +20,7 @@ export default class Gameloop {
   }
 
   start() {
-    document.addEventListener('DOMContentLoaded', () => {
+    window.addEventListener('load', () => {
       const options = this.getOptions();
       const gameField = new Gamefield({
         width: 1420,
@@ -52,15 +52,13 @@ export default class Gameloop {
             return;
           }
 
-          if (!this.isClosest(activeObject, potential)) {
-            return;
-          }
-
           if (Gameloop.isNeighbour(activeObjectNeighbours, potential)) {
-            isMerged = true;
-            this.drawGroup(activeObject, potential);
-            canvas.remove(activeObject);
-            canvas.remove(potential);
+            if (this.isClosest(activeObject, potential)) {
+              isMerged = true;
+              this.drawGroup(activeObject, potential);
+              canvas.remove(activeObject);
+              canvas.remove(potential);
+            }
           }
         });
       });
@@ -77,12 +75,9 @@ export default class Gameloop {
         }),
       },
     );
-    // const canvas = this.getCanvas();
     path.set({ top: 150, left: 150 });
     canvas.add(path);
-    console.log(path);
     canvas.renderAll();
-    // return path;
   }
 
   drawPieces(scale = 1) {
@@ -96,9 +91,9 @@ export default class Gameloop {
     pieces.forEach((piece, piecePosition) => {
       const last = piecePosition === (pieces.length - 1);
       const drawCallback = Gameloop.drawCallback.bind(null, { canvas, last, piecePosition, scale });
-      const drawSvg = this.drawSvg.bind(this);
-      // fabric.Image.fromURL(piece.getContent(), drawCallback);
-      fabric.util.loadImage(piece.getContent(), drawSvg);
+      // const drawSvg = this.drawSvg.bind(this);
+      fabric.Image.fromURL(piece.getContent(), drawCallback);
+      // fabric.util.loadImage(piece.getContent(), drawSvg);
     });
   }
 
