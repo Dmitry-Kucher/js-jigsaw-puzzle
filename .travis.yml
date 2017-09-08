@@ -2,14 +2,15 @@ language: node_js
 node_js: 5
 cache:
   directories:
-    - node_modules
+  - node_modules
 before_script:
-  - npm install -g gulp-cli
+- npm install -g gulp-cli
 script:
-  - npm run browser-build
+- npm run browser-build
 deploy:
   provider: pages
   skip_cleanup: true
-  github_token: GITHUB_TOKEN # Set in travis-ci.org dashboard
+  github_token:
+    secure: c1C7FtEzaUe4VtUl/dIqLM4c9G1G4olSlXoJ1zdM0gzC8RVM8q1lqEHAHIDH1/6OYOoeuQOrKq6nHtGtp5jZvEzBz/38FIk5xLMMu3aJBMAaRFsOHPBUwxrT2WP1hEXhEyLgWJ6PS5KO+kQhRci1KVSJwi4OqAgyT4TfFUax9tUTcsMHa8R3NC3XnGho0yCIwJcH79fl67NBiUaG+446HcdCkrFrbjF6Wk2ZsQPp4YrJf0+NGXr51rSNjIAcnVZwtUEUcEyqsrg9nNJdxcAPIdqT6C3WODHhpSyntaQGmGHngJorZcOjbAWc9rMzRtE/CLF+ck+ooH02Y3svIastHcRKGB/ECOvzpX4+6Hm0r3kaHxgHNvYCG16hJ3q7O6LHCF06QGW6g0x0Ht5h/Xt0ZhvR8qk2tauxQr0jyxbF/TtiDIAOtey6oyRMqBUAGbvMEh8f262frgqno7+UVSR+3mFwnC20dkD7JRfUE9KolQzRxB+oVRSAVw+Ad1tHcxMAm54OSLUKRxpX5btKxDyjUAHrjBxi30mm4aUmsCPEYi5nsggOaPUVvCiSSuBvpH4pNzb77uW9LJSEodTXOiDzuPEUbKiKli/rIOO4T2SD1STW94Kr2HnFO9+3JU9RYz3RHyb0KfTTxc9hsZnQhbCzvpJwONPzwm9AC0icJv+oAtk=
   on:
     branch: master
