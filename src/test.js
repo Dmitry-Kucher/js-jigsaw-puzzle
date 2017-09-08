@@ -5,8 +5,8 @@ import Gameloop from './classes/Gameloop';
 
 const options = {
   canvasId: 'c',
-  rows: 4,
-  cols: 4,
+  rows: 8,
+  cols: 8,
   scale: 0.8,
   imageSelector: '[jjp-image]',
   neighboursSensitivity: 20,
