@@ -4,6 +4,8 @@
 import Image from './Image';
 import Gamefield from './Gamefield';
 import RecalculatedObjectsGroup from './RecalculatedObjectsGroup';
+import CanvasLogger from './CanvasLogger';
+import Logger from './Logger';
 
 export default class Gameloop {
   constructor(options) {
@@ -32,8 +34,10 @@ export default class Gameloop {
       this.drawPieces(options.scale);
       canvas.on('object:selected', () => {
         if (window.debugApp) {
+          const canvasLogger = new CanvasLogger({ canvas });
+          const logger = new Logger({ loggerInterface: canvasLogger });
           const activeObject = canvas.getActiveObject();
-          console.log(activeObject);
+          logger.log(activeObject);
         }
       });
       canvas.on('object:modified', () => {

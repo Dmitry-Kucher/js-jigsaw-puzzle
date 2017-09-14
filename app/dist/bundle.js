@@ -1,4 +1,41 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var CanvasLogger = function () {
+  function CanvasLogger(options) {
+    _classCallCheck(this, CanvasLogger);
+
+    var defaultOptions = {};
+    this.options = _extends({}, defaultOptions, options);
+  }
+
+  _createClass(CanvasLogger, [{
+    key: "log",
+    value: function log(message) {
+      var textMessage = message.toString();
+      var canvas = this.options.canvas;
+      var fabricjsTextObject = new fabric.Text(textMessage, { left: canvas.width - 100, top: 10 });
+      canvas.add(fabricjsTextObject);
+      canvas.renderAll();
+    }
+  }]);
+
+  return CanvasLogger;
+}();
+
+exports.default = CanvasLogger;
+
+},{}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -35,7 +72,7 @@ var Composition = function Composition() {
 
 exports.default = Composition;
 
-},{"./Piece":5}],2:[function(require,module,exports){
+},{"./Piece":7}],3:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -111,7 +148,7 @@ var Gamefield = function () {
 
 exports.default = Gamefield;
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -134,6 +171,14 @@ var _Gamefield2 = _interopRequireDefault(_Gamefield);
 var _RecalculatedObjectsGroup = require('./RecalculatedObjectsGroup');
 
 var _RecalculatedObjectsGroup2 = _interopRequireDefault(_RecalculatedObjectsGroup);
+
+var _CanvasLogger = require('./CanvasLogger');
+
+var _CanvasLogger2 = _interopRequireDefault(_CanvasLogger);
+
+var _Logger = require('./Logger');
+
+var _Logger2 = _interopRequireDefault(_Logger);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -176,8 +221,10 @@ var Gameloop = function () {
         _this.drawPieces(options.scale);
         canvas.on('object:selected', function () {
           if (window.debugApp) {
+            var canvasLogger = new _CanvasLogger2.default({ canvas: canvas });
+            var logger = new _Logger2.default({ loggerInterface: canvasLogger });
             var activeObject = canvas.getActiveObject();
-            console.log(activeObject);
+            logger.log(activeObject);
           }
         });
         canvas.on('object:modified', function () {
@@ -502,7 +549,7 @@ var Gameloop = function () {
 
 exports.default = Gameloop;
 
-},{"./Gamefield":2,"./Image":4,"./RecalculatedObjectsGroup":6}],4:[function(require,module,exports){
+},{"./CanvasLogger":1,"./Gamefield":3,"./Image":5,"./Logger":6,"./RecalculatedObjectsGroup":8}],5:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -590,7 +637,42 @@ var Image = function () {
 
 exports.default = Image;
 
-},{"./Composition":1,"./Piece":5}],5:[function(require,module,exports){
+},{"./Composition":2,"./Piece":7}],6:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Logger = function () {
+  function Logger(options) {
+    _classCallCheck(this, Logger);
+
+    var defaultOptions = {
+      loggerInterface: console
+    };
+    this.options = _extends({}, defaultOptions, options);
+  }
+
+  _createClass(Logger, [{
+    key: "log",
+    value: function log(message) {
+      this.options.loggerInterface.log(message);
+    }
+  }]);
+
+  return Logger;
+}();
+
+exports.default = Logger;
+
+},{}],7:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -641,7 +723,7 @@ var Piece = function () {
 
 exports.default = Piece;
 
-},{}],6:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -713,7 +795,7 @@ var RecalculatedObjectsGroup = function () {
 
 exports.default = RecalculatedObjectsGroup;
 
-},{}],7:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 'use strict';
 
 var _Gameloop = require('./classes/Gameloop');
@@ -737,6 +819,6 @@ var gameLoop = new _Gameloop2.default(options);
 
 gameLoop.start();
 
-},{"./classes/Gameloop":3}]},{},[7])
+},{"./classes/Gameloop":4}]},{},[9])
 
 //# sourceMappingURL=bundle.js.map

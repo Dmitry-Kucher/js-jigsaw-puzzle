@@ -69,7 +69,7 @@ gulp.task('lint:fix', () => {
 gulp.task('compile', () => gulp.src(['src/classes/*.js', 'src/*.js'], { base: './src/' })
   .pipe(sourcemaps.init())
   .pipe(babel({
-    presets: ['es2015'],
+    presets: ['es2015', 'stage-2'],
   }))
   .pipe(sourcemaps.write('.'))
   .pipe(gulp.dest('app/dist')));
