@@ -1,0 +1,8 @@
+node_modules/**/*.js
+app/**/*.js
+build/**/*.js
+docs/**/*.js
+example/**/*.js
+lib/**/*.js
+lib/**/*.jsx
+**/bundle.js
