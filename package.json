@@ -25,7 +25,9 @@
   },
   "dependencies": {
     "@pixi/app": "^5.0.4",
+    "@pixi/constants": "^5.1.0",
     "@pixi/core": "^5.0.4",
+    "@pixi/interaction": "^5.1.5",
     "@pixi/loaders": "^5.0.4",
     "@pixi/math": "^5.1.0",
     "@pixi/sprite": "^5.0.4",
